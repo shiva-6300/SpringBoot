@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        ARTIFACTORY_SERVER = 'jfrog-jenkins-token'
+        ARTIFACTORY_SERVER = 'jfrog-api-key'
         ARTIFACTORY_REPO   = 'libs-snapshot-local'
     }
 
