@@ -1,8 +1,12 @@
 pipeline {
     agent any
-      tools {
-        maven 'Maven3'   // Jenkins → Manage Jenkins → Tools
-        //jdk 'JDK17'      // optional but recommended
+
+    tools {
+        maven 'Maven3'      // Jenkins → Manage Jenkins → Tools
+    }
+
+    environment {
+        SONARQUBE_ENV = 'SonarQube'   // SonarQube server name in Jenkins
     }
 
     stages {
@@ -16,7 +20,20 @@ pipeline {
 
         stage('Build WAR') {
             steps {
-                bat 'mvn clean package'
+                bat 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    bat '''
+                    mvn sonar:sonar ^
+                    -Dsonar.projectKey=SpringBoot ^
+                    -Dsonar.projectName=SpringBoot ^
+                    -Dsonar.host.url=http://localhost:9000
+                    '''
+                }
             }
         }
 
@@ -29,10 +46,10 @@ pipeline {
 
     post {
         success {
-            echo 'WAR file built successfully'
+            echo 'Build + SonarQube analysis completed successfully'
         }
         failure {
-            echo 'Build failed'
+            echo 'Build or SonarQube analysis failed'
         }
     }
 }
