@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'Maven3'
-        sonarQube 'SonarScanner'
+        sonarScanner 'SonarScanner'
     }
 
     stages {
