@@ -1,8 +1,8 @@
 pipeline {
     agent any
+
     tools {
         maven 'Maven3'
-       // sonarScanner 'SonarScanner'
     }
 
     stages {
@@ -23,13 +23,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    bat '''
-                    sonar-scanner ^
-                    -Dsonar.projectKey=SpringBoot ^
-                    -Dsonar.projectName=SpringBoot ^
-                    -Dsonar.sources=src ^
-                    -Dsonar.java.binaries=target
-                    '''
+                    bat 'mvn sonar:sonar -Dsonar.projectKey=SpringBoot'
                 }
             }
         }
