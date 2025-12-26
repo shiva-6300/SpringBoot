@@ -5,6 +5,11 @@ pipeline {
         maven 'Maven3'
     }
 
+    environment {
+        ARTIFACTORY_SERVER = 'jfrog-jenkins-token'     
+        ARTIFACTORY_REPO   = 'libs-snapshot-local'
+    }
+
     stages {
 
         stage('Checkout Code') {
@@ -27,14 +32,35 @@ pipeline {
                 }
             }
         }
+
+        stage('Upload WAR to JFrog') {
+            steps {
+                script {
+                    def server = Artifactory.server(env.ARTIFACTORY_SERVER)
+
+                    def uploadSpec = """
+                    {
+                      "files": [
+                        {
+                          "pattern": "target/*.war",
+                          "target": "${ARTIFACTORY_REPO}/springboot/"
+                        }
+                      ]
+                    }
+                    """
+
+                    server.upload(uploadSpec)
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'Build + SonarQube analysis SUCCESS'
+            echo 'WAR successfully uploaded to JFrog Artifactory'
         }
         failure {
-            echo 'Build or SonarQube FAILED'
+            echo 'Pipeline FAILED'
         }
     }
 }
