@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        ARTIFACTORY_SERVER = 'jfrog-jenkins-token'     
+        ARTIFACTORY_SERVER = 'jfrog-jenkins-token'
         ARTIFACTORY_REPO   = 'libs-snapshot-local'
     }
 
@@ -35,21 +35,17 @@ pipeline {
 
         stage('Upload WAR to JFrog') {
             steps {
-                script {
-                    def server = Artifactory.server(env.ARTIFACTORY_SERVER)
-
-                    def uploadSpec = """
-                    {
+                rtUpload(
+                    serverId: "${ARTIFACTORY_SERVER}",
+                    spec: """{
                       "files": [
                         {
                           "pattern": "target/*.war",
                           "target": "${ARTIFACTORY_REPO}/springboot/"
                         }
                       ]
-                    }
-                    """
-                    server.upload(uploadSpec)
-                }
+                    }"""
+                )
             }
         }
     }
