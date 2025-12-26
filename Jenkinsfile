@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
 
         stage('Checkout Code') {
@@ -11,13 +12,13 @@ pipeline {
 
         stage('Build WAR') {
             steps {
-                sh 'mvn clean package'
+                bat 'mvn clean package'
             }
         }
 
         // stage('Archive WAR') {
         //     steps {
-        //         archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+        //         archiveArtifacts artifacts: 'target\\*.war', fingerprint: true
         //     }
         // }
     }
