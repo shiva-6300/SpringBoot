@@ -2,11 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3'      // Jenkins → Manage Jenkins → Tools
-    }
-
-    environment {
-        SONARQUBE_ENV = 'SonarQube'   // SonarQube server name in Jenkins
+        maven 'Maven3'
+        sonarQube 'SonarScanner'
     }
 
     stages {
@@ -20,36 +17,31 @@ pipeline {
 
         stage('Build WAR') {
             steps {
-                bat 'mvn clean package -DskipTests'
+                bat 'mvn clean package'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                withSonarQubeEnv('SonarQube') {
                     bat '''
-                    mvn sonar:sonar ^
+                    sonar-scanner ^
                     -Dsonar.projectKey=SpringBoot ^
                     -Dsonar.projectName=SpringBoot ^
-                    -Dsonar.host.url=http://localhost:9000
+                    -Dsonar.sources=src ^
+                    -Dsonar.java.binaries=target
                     '''
                 }
             }
         }
-
-        // stage('Archive WAR') {
-        //     steps {
-        //         archiveArtifacts artifacts: 'target\\*.war', fingerprint: true
-        //     }
-        // }
     }
 
     post {
         success {
-            echo 'Build + SonarQube analysis completed successfully'
+            echo 'Build + SonarQube analysis SUCCESS'
         }
         failure {
-            echo 'Build or SonarQube analysis failed'
+            echo 'Build or SonarQube FAILED'
         }
     }
 }
