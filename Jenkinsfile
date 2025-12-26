@@ -1,5 +1,9 @@
 pipeline {
     agent any
+      tools {
+        maven 'Maven3'   // Jenkins → Manage Jenkins → Tools
+        //jdk 'JDK17'      // optional but recommended
+    }
 
     stages {
 
