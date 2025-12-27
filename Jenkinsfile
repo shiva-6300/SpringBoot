@@ -6,8 +6,7 @@ pipeline {
     }
 
     environment {
-        ARTIFACTORY_SERVER = 'jfrog-api-key'
-        ARTIFACTORY_REPO   = 'libs-snapshot-local'
+        SONARQUBE_ENV = 'SonarQube'
     }
 
     stages {
@@ -27,32 +26,16 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
                     bat 'mvn sonar:sonar -Dsonar.projectKey=SpringBoot'
                 }
-            }
-        }
-
-        stage('Upload WAR to JFrog') {
-            steps {
-                rtUpload(
-                    serverId: "${ARTIFACTORY_SERVER}",
-                    spec: """{
-                      "files": [
-                        {
-                          "pattern": "target/*.war",
-                          "target": "${ARTIFACTORY_REPO}/springboot/"
-                        }
-                      ]
-                    }"""
-                )
             }
         }
     }
 
     post {
         success {
-            echo 'WAR successfully uploaded to JFrog Artifactory'
+            echo 'Pipeline completed successfully'
         }
         failure {
             echo 'Pipeline FAILED'
