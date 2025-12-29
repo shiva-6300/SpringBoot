@@ -5,9 +5,9 @@ pipeline {
         maven 'Maven3'
     }
 
-    environment {
-        SONARQUBE_ENV = 'SonarQube'
-    }
+    // environment {
+    //     SONARQUBE_ENV = 'SonarQube'
+    // }
 
     stages {
 
@@ -24,13 +24,13 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    bat 'mvn sonar:sonar -Dsonar.projectKey=SpringBoot'
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv("${SONARQUBE_ENV}") {
+        //             bat 'mvn sonar:sonar -Dsonar.projectKey=SpringBoot'
+        //         }
+        //     }
+        // }
     }
 
     post {
