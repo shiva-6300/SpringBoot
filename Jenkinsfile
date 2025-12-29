@@ -4,7 +4,6 @@ pipeline {
     tools {
         maven 'Maven3'
     }
-
     // environment {
     //     SONARQUBE_ENV = 'SonarQube'
     // }
